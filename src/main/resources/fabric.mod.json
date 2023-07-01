@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "particledrawingapi",
+  "version": "${version}",
+  "name": "ParticleDrawingAPI",
+  "description": "",
+  "authors": [],
+  "contact": {
+    "repo": "https://github.com/Admin/ParticleDrawingAPI"
+  },
+  "license": "All-Rights-Reserved",
+  "icon": "assets/ParticleDrawingAPI/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "org.karn.particledrawingapi.client.ParticleDrawingAPIClient"
+    ],
+    "main": [
+      "org.karn.particledrawingapi.ParticleDrawingAPI"
+    ]
+  },
+  "mixins": [
+    "ParticleDrawingAPI.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
