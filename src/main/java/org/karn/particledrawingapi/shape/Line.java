@@ -1,18 +1,35 @@
 package org.karn.particledrawingapi.shape;
 
 import net.minecraft.particle.ParticleEffect;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3d;
 import org.karn.particledrawingapi.util.Draw;
+import org.karn.particledrawingapi.util.Scheduler;
 
-import java.util.Arrays;
+import java.util.function.Consumer;
 
 public class Line {
-    public static void main(ServerCommandSource source, ParticleEffect particle, Vec3d pos1, Vec3d pos2, int number) {
+    public static Consumer<MinecraftServer> main(ServerCommandSource source, ParticleEffect particle, Vec3d pos1, Vec3d pos2, int number, int tick) {
         Point[] points = generateLine(pos1, pos2, number);
-        for (int i =0; i < points.length; i++) {
-            Draw.main(source, particle, points[i].x, points[i].y, points[i].z, false);
+        if (tick > 0) {
+            int step = number/tick;
+            for(int t = 0; t < tick; t++) {
+                int time = t;
+                Scheduler.INSTANCE.submit(server -> {
+                    for (int i = 0; i < step; i++) {
+                        Draw.main(source, particle, points[time*step+i].x, points[time*step+i].y, points[time*step+i].z, false);
+                        source.sendFeedback(Text.literal(String.valueOf(time*step+i)),false);
+                    }
+                },t);
+            }
+        } else {
+            for (int i =0; i < points.length; i++) {
+                Draw.main(source, particle, points[i].x, points[i].y, points[i].z, false);
+            }
         }
+        return null;
     }
 
     public static Point[] generateLine(Vec3d pos1, Vec3d pos2, int numPoints) {
