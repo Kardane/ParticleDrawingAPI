@@ -20,7 +20,7 @@ public class Line {
                 Scheduler.INSTANCE.submit(server -> {
                     for (int i = 0; i < step; i++) {
                         Draw.main(source, particle, points[time*step+i].x, points[time*step+i].y, points[time*step+i].z, false);
-                        source.sendFeedback(Text.literal(String.valueOf(time*step+i)),false);
+                        source.sendFeedback(Text.literal("1"),false);
                     }
                 },t);
             }
