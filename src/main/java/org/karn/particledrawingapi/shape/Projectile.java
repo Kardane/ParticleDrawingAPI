@@ -29,6 +29,10 @@ public class Projectile {
         double y = pos.getY();
         double z = pos.getZ();
 
+        int blockX = (int) Math.floor(x);
+        int blockY = (int) Math.floor(y);
+        int blockZ = (int) Math.floor(z);
+
         int step = 0;
         if(tick>0) {
             step = range/tick*5;
@@ -47,15 +51,18 @@ public class Projectile {
             z += dz;
             Draw.main(source, particle, x,y,z, false);
             /* collision check here */
-            BlockState blockinfo = source.getWorld().getBlockState(new BlockPos((int) Math.floor(x), (int) Math.floor(y), (int) Math.floor(z)));
+            if((int) Math.floor(x) != blockX) blockX = (int) Math.floor(x);
+            if((int) Math.floor(y) != blockY) blockY = (int) Math.floor(y);
+            if((int) Math.floor(z) != blockZ) blockZ = (int) Math.floor(z);
+            BlockState blockinfo = source.getWorld().getBlockState(new BlockPos(blockX, blockY, blockZ));
             if(!blockinfo.isAir()) {
+                source.sendFeedback(Text.literal(String.valueOf(blockinfo)),false);
                 HitorEndOfRange = true;
                 break;
             }
         }
 
         if(HitorEndOfRange){
-            source.sendFeedback(Text.literal("hit!"),false);
             return null;
         }
 
@@ -66,28 +73,6 @@ public class Projectile {
                 Projectile.main(source,particle,new Vec3d(pos.getX() + (dx* finalStep),pos.getY() + (dy* finalStep),pos.getZ() + (dz* finalStep)),rotation,range,tick-1);
             },1);
         }
-        /*
-        if(tick > 0){
-            for(int t = 0; t < tick; t++) {
-                int time = t;
-                Scheduler.INSTANCE.submit(server -> {
-                    Projectile.main(source,particle,new Vec3d(),rotation,range,tick)
-                    double x = pos.getX() + (dx * time * step);
-                    double y = pos.getY() + (dy * time * step);
-                    double z = pos.getZ() + (dz * time * step);
-                    for (int i = 0; i < step; i++) {
-                        x += dx;
-                        y += dy;
-                        z += dz;
-                        Draw.main(source, particle, x,y,z, false);
-                        BlockState blockinfo = source.getWorld().getBlockState(new BlockPos((int) Math.floor(x), (int) Math.floor(y), (int) Math.floor(z)));
-                        if(!blockinfo.isAir()) break;
-                        //source.sendFeedback(Text.literal(String.valueOf(blockinfo)).append(String.valueOf(Math.floor(x))).append(String.valueOf(Math.floor(y))).append(String.valueOf(Math.floor(z))),false);
-
-                    }
-                },t);
-            }
-        }*/
         return null;
     }
 }
