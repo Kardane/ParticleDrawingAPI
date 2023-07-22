@@ -2,7 +2,6 @@ package org.karn.particledrawingapi;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.minecraft.command.CommandRegistryAccess;
 import org.karn.particledrawingapi.command.example;
 
 

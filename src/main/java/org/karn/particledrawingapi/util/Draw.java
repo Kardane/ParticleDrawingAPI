@@ -1,29 +1,53 @@
 package org.karn.particledrawingapi.util;
 
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleTypes;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.Text;
 
-import java.util.function.Consumer;
+import java.util.List;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Draw {
-    public static Consumer<MinecraftServer> main(ServerCommandSource source, ParticleEffect particle, double x, double y, double z, boolean force){
-        for(int j = 0; j < source.getWorld().getPlayers().size(); ++j) {
-            ServerPlayerEntity player = source.getWorld().getPlayers().get(j);
-            if(particle == ParticleTypes.DUST || particle == ParticleTypes.DUST_COLOR_TRANSITION){
-                //source.getWorld().spawnParticles(player, particle, force, x, y, z, 0, 0, -10,0,1);
-                Packet<?> packet = new ParticleS2CPacket(particle, force, x, y, z, 0, -10, 0, 1, 0);
-                source.getWorld().sendToPlayerIfNearby(player, force, x, y, z, packet);
-            } else {
-                Packet<?> packet = new ParticleS2CPacket(particle, force, x, y, z, 0, 0, 0, 1, 0);
-                source.getWorld().sendToPlayerIfNearby(player, force, x, y, z, packet);
-            }
 
+    public static void DotArrayDraw(ServerWorld world, ParticleEffect Particle, List<Map<String, Double>> array) {
+        DotArrayDraw(world, Particle, array, array.size());
+    }
+    public static void DotArrayDraw(ServerWorld world, ParticleEffect Particle, List<Map<String, Double>> array, Integer step) {
+        for (int i = 0; i < step; i++) {
+            Map<String, Double> Dot = array.get(0);
+            ParticleDraw(world, Particle, Dot.get("x"), Dot.get("y"), Dot.get("z"));
+            array.remove(0);
+            if (array.size() < 1) {
+                return;
+            }
         }
-        return null;
+        if (array.size() > 0) {
+            Timer timer = new Timer();
+            TimerTask task = new TimerTask() {
+                @Override
+                public void run() {
+                    // DotArrayDraw 함수 다시 호출
+                    DotArrayDraw(world, Particle, array, step);
+                }
+            };
+            int delay = 50; // 0.05초 뒤에 실행
+            timer.schedule(task, delay);
+        }
+    }
+
+    public static void ParticleDraw(ServerWorld world, ParticleEffect Particle, double x, double y, double z) {
+        ParticleDraw(world, Particle, x, y, z, false);
+    }
+
+    public static void ParticleDraw(ServerWorld world, ParticleEffect Particle, double x, double y, double z, boolean force) {
+        for(int j = 0; j < world.getPlayers().size(); ++j) {
+            ServerPlayerEntity player = world.getPlayers().get(j);
+            world.spawnParticles(player, Particle, force, x, y, z, 0, 0, 0, 0, 1);
+        }
+
     }
 }
