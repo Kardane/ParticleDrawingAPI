@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class Rotate {
     public static List<Map<String, Double>> RotateDotArray(List<Map<String, Double>> array, Vec2f rotation, Vec3d rotationPos) {
-        System.out.println(rotation.x + " | " + rotation.y);
+        //System.out.println(rotation.x + " | " + rotation.y);
         return RotateDotArray(array, rotation.x, rotation.y, 0, rotationPos);
     }
     public static List<Map<String, Double>> RotateDotArray(List<Map<String, Double>> array, double x, double y, double z, Vec3d rotationPos) {
