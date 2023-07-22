@@ -18,6 +18,7 @@ import static org.karn.particledrawingapi.shape.Arc.ArcDots;
 import static org.karn.particledrawingapi.shape.Arc.CircleDots;
 import static org.karn.particledrawingapi.shape.Cubic.CubeDots;
 import static org.karn.particledrawingapi.shape.Line.LineDots;
+import static org.karn.particledrawingapi.shape.Rectangle.RectangleDots;
 import static org.karn.particledrawingapi.shape.Sphere.sphereDots;
 import static org.karn.particledrawingapi.shape.Sprial.SpiralDots;
 import static org.karn.particledrawingapi.util.Draw.DotArrayDraw;
@@ -223,6 +224,38 @@ public class example {
                                                                                             return 1;
                                                                                         })
                                                                                 )
+                                                                        )
+                                                                )
+                                                        )
+                                                )
+                                        )
+                                )
+                        )
+                        .then(CommandManager.literal("rectangle")
+                                .then(CommandManager.argument("pos1", Vec3ArgumentType.vec3())
+                                        .then(CommandManager.argument("pos2",Vec3ArgumentType.vec3())
+                                                .then(CommandManager.argument("number", IntegerArgumentType.integer(1))
+                                                        .executes(ctx -> {
+                                                            List<Map<String, Double>> Array = RectangleDots(Vec3ArgumentType.getVec3(ctx, "pos1"), Vec3ArgumentType.getVec3(ctx, "pos2"),IntegerArgumentType.getInteger(ctx, "number"));
+                                                            DotArrayDraw(ctx.getSource().getWorld(), ParticleEffectArgumentType.getParticle(ctx, "particle"), Array);
+                                                            return 1;
+                                                        })
+                                                        .then(CommandManager.argument("NumberPerTick", IntegerArgumentType.integer(1))
+                                                                .executes(ctx ->{
+                                                                    List<Map<String, Double>> Array = RectangleDots(Vec3ArgumentType.getVec3(ctx, "pos1"), Vec3ArgumentType.getVec3(ctx, "pos2"),IntegerArgumentType.getInteger(ctx, "number"));
+                                                                    DotArrayDraw(ctx.getSource().getWorld(), ParticleEffectArgumentType.getParticle(ctx, "particle"), Array, IntegerArgumentType.getInteger(ctx, "NumberPerTick"));
+                                                                    return 1;
+                                                                })
+                                                                .then(CommandManager.argument("RotationAngle", Vec2ArgumentType.vec2())
+                                                                        .then(CommandManager.argument("RotationPos", Vec3ArgumentType.vec3())
+                                                                                .executes(ctx ->{
+                                                                                    List<Map<String, Double>> Array = RectangleDots(Vec3ArgumentType.getVec3(ctx, "pos1"), Vec3ArgumentType.getVec3(ctx, "pos2"),IntegerArgumentType.getInteger(ctx, "number"));
+                                                                                    PosArgument Angle = RotationArgumentType.getRotation(ctx,"RotationAngle");
+                                                                                    Vec2f rot = new Vec2f(Angle.toAbsoluteRotation(ctx.getSource()).x+90, Angle.toAbsoluteRotation(ctx.getSource()).y*-1);
+                                                                                    List<Map<String, Double>> RotatedArray = RotateDotArray(Array, rot, Vec3ArgumentType.getVec3(ctx, "RotationPos"));
+                                                                                    DotArrayDraw(ctx.getSource().getWorld(), ParticleEffectArgumentType.getParticle(ctx, "particle"), RotatedArray, IntegerArgumentType.getInteger(ctx, "NumberPerTick"));
+                                                                                    return 1;
+                                                                                })
                                                                         )
                                                                 )
                                                         )
